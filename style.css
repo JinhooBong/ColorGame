@@ -12,6 +12,22 @@ h1 {
     color: #fff;
     font-family: "Dosis";
     font-size: 4rem;
+    margin: 1rem auto;
+}
+
+#directions {
+    text-align: center;
+    color: #fff;
+    font-family: "Dosis";
+    font-size: 2rem;
+}
+
+#score {
+    text-align: center;
+    color: #fff;
+    font-family: "Dosis";
+    font-size: 3rem;    
+    margin: 1rem auto;
 }
 
 .container {
