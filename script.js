@@ -7,7 +7,8 @@ let offset = 75;
 let score = 0;
 let level = 1;
 let offSquareIndex = 0;
-let play = true;
+let wholeGameReset = false;
+// let play = true;
 
 /* ------------------------------------------------------------------------------------------------------------------------ */
 
@@ -30,19 +31,20 @@ let commonColor = function() {
     // finding index of largest value in color array 
     let offOne = colorArr.indexOf(findMax(colorArr));
 
-    // making sure value never hits negative
+    // subtracting the offset from the max value color without hitting negative
     colorArr[offOne] - offset > 0 ? colorArr[offOne] = colorArr[offOne] - offset : colorArr[offOne] = 0;
 
     // pushing the adjusted rgb color set
     arrOfColors.push("rgb(" + colorArr[0] + "," + colorArr[1] + "," + colorArr[2] + ")");
+    
     // console.log(arrOfColors);
-
     return arrOfColors;
 }
 
         // generateRandomNum() : function that is generating the random numbers ranging from (offset to 256)
         let generateRandomNum = function() {
-            return Math.floor((Math.random() * 256) + offset);
+            let num = Math.floor(Math.random() * 256);
+            return num + offset > 256 ? num : num + offset;
         }
 
         // findMax() : function that finds the max value given an array
@@ -77,34 +79,45 @@ const checkAnswer = function() {
                 levelTitle.innerHTML = score;
                 console.log("score: " + score);
                 console.log("Level: " + level);
-                resetColors();
+                reset();
             } else {
-                // console.log("Incorrect!");
-                play = false;
+                console.log("Incorrect!");
+                // play = false;
                 // implement lose function
-                // gameOver();
+                gameOver();
             }
         })
     }
 }
 
 // resetColors() : function that generates new set of colors and populates the squares properly
-const resetColors = function() {
+const reset = function() {
+
+    // if the whole game is reset, we want the text to reflect the start of the game.
+    if(wholeGameReset) {
+        gameTitle.innerHTML = "Color Game";
+        levelTitle.innerHTML = "";
+        directions.style.display = "none";
+    }
+
     // creating new sets of colors
     let newColors = commonColor();
 
     // generating the new position of the square that will be one color off
     offSquareIndex = Math.floor((Math.random() * gridItemArr.length));
-    console.log(offSquareIndex);
+    console.log("reset 1: " + offSquareIndex);
 
     // setting the squares up
     for(let i = 0; i < gridItemArr.length; i++) {
+        gridItemArr[i].style.display = "block";
         if(i === offSquareIndex) {
             gridItemArr[i].style.backgroundColor = newColors[1];
         } else {
             gridItemArr[i].style.backgroundColor = newColors[0];
         }
     }
+    console.log("reset 2: " + offSquareIndex);
+    checkAnswer(offSquareIndex);
 }
 
 // Init() : function that sets up the initial stages of the game. 
@@ -112,6 +125,7 @@ const resetColors = function() {
 let init = function() {
 
     gameTitle.innerHTML = "Color Game";
+    levelTitle.style.display = "block";
     levelTitle.innerHTML = "";
     directions.style.display = "none";
     // populating the two colors;
@@ -119,7 +133,7 @@ let init = function() {
     // console.log(colors);
     // generating the position of the square that will be one color off
     offSquareIndex = Math.floor((Math.random() * gridItemArr.length));
-    console.log(offSquareIndex);
+    console.log("init 1: " + offSquareIndex);
 
     // setting the squares up 
     for(let i = 0; i < gridItemArr.length; i++) {
@@ -131,23 +145,28 @@ let init = function() {
             gridItemArr[i].style.backgroundColor = colors[0];
         }
     }
-
+    console.log("init 2: " + offSquareIndex);
     checkAnswer(offSquareIndex);
 }
 
-init();
-
 // gameOver() : when user guesses incorrectly, we alert the user and restart the game within a second
-// const gameOver = function() {
-//     level = 1;
-//     score = 0;
-//     gameTitle.innerHTML = "GAME OVER";
-//     for(let i = 0; i < gridItemArr.length; i++) {
-//         gridItemArr[i].style.display = "none";
-//     }
-//     directions.style.display = "block";
-//     directions.innerHTML = "Game restarting... ";
-//     setTimeout(function() {
-//        init();
-//     }, 1000);
-// }
+const gameOver = function() {
+    wholeGameReset = true;
+    level = 1;
+    score = 0;
+    gameTitle.innerHTML = "GAME OVER";
+    levelTitle.style.display = "none";
+    for(let i = 0; i < gridItemArr.length; i++) {
+        gridItemArr[i].style.display = "none";
+    }
+    directions.style.display = "block";
+    directions.innerHTML = "Game restarting... ";
+    setTimeout(function() {
+       reset();
+    }, 1000);
+}
+
+
+
+// start the game
+init();
