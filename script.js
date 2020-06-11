@@ -8,9 +8,9 @@ let offset = 75;
 let score = 0;
 let level = 1;
 let offSquareIndex = 0;
-let wholeGameReset = false;
-// let play = true;
+let maxLevelReached = false;
 
+// giving each object a unique id property 
 for(let i = 0; i < gridItemArr.length; i++) {
     gridItemArr[i].id = i; 
 }
@@ -61,7 +61,7 @@ let commonColor = function() {
                 }
             }
             // if value is high enough, set the offset higher
-            max > 150 ? offset = 100: null;
+            // max > 150 ? offset = 100: null;
             return max;
         }
 
@@ -69,7 +69,6 @@ let commonColor = function() {
 
 // checkAnswer() : function that checks if the provided square is the one that the user chooses.
 const checkAnswer = function() {
-
     // if what the user has clicked is correct: 
     //      - add 100 to score && display score
     //      - increment level && display level
@@ -77,31 +76,44 @@ const checkAnswer = function() {
         score+=100;
         level++;
 
-        console.log("reached");
-        gameTitle.innerHTML = "Level " + level;
-        levelTitle.style.display = "block";
-        levelTitle.innerHTML = score;
-        reset();
+        if(level === 50) {
+            maxLevelReached = true;
+            gameOver();
+        } else {
+            gameTitle.innerHTML = "Level " + level;
+            levelTitle.style.display = "block";
+            levelTitle.innerHTML = score;
+    
+            if(level >= 10) {
+                offset = 50;
+            }
+            if(level >= 20) {
+                offset = 35;
+            }
+            if(level >= 30) {
+                offset = 25;
+            }
+            if(level >= 40) {
+                offset = 15;
+            }
+    
+            setupColors();
+        }
     } else {
         gameOver();
     }
 }
 
-// reset() : function that generates new set of colors and populates the squares properly
-const reset = function() {
-    setupColors();
-}
-
 
 // setupColors() : reusable function to set the color combinations and set up the grid
 const setupColors = function() {
-
+    console.log(offset);
     // generating the two new RGB combinations
     let colors = commonColor();
-
+    console.log(colors);
     // generating the index of the off square
     offSquareIndex = Math.floor((Math.random() * gridItemArr.length));
-    
+    console.log(offSquareIndex);
     // setting up the physical grid and adding a click event listener to each square 
     for(let i = 0; i < gridItemArr.length; i++) {
         gridItemArr[i].style.display = "block";
@@ -133,31 +145,39 @@ let init = function() {
 
     // setting the squares up 
     setupColors();
-    console.log("init: " + offSquareIndex);
+    // console.log("init: " + offSquareIndex);
 }
 
 // gameOver() : when user guesses incorrectly, we alert the user and restart the game within a second
 const gameOver = function() {
-    console.log("gameOver entered");
-    // set wholeGameRest to true so that reset() method will update the titles 
-    wholeGameReset = true;
 
-    // reset level && score
-    level = 1;
-    score = 0;
+    if(maxLevelReached == true) {
+        gameTitle.innerHTML = "YOU WIN";
+        levelTitle.style.display = "none";
+        for(let i = 0; i < gridItemArr.length; i++) {
+            gridItemArr[i].style.display = "none";
+        }
+        gameover_message.style.display = "block";
+        gameover_message.innerHTML = "You beat my game. You have amazing eyesight.";
+    } else {
+        // reset level && score
+        level = 1;
+        score = 0;
 
-    // display temporary game over message 
-    gameTitle.innerHTML = "GAME OVER";
-    levelTitle.style.display = "none";
-    for(let i = 0; i < gridItemArr.length; i++) {
-        gridItemArr[i].style.display = "none";
+        // display temporary game over message 
+        gameTitle.innerHTML = "GAME OVER";
+        levelTitle.style.display = "none";
+        for(let i = 0; i < gridItemArr.length; i++) {
+            gridItemArr[i].style.display = "none";
+        }
+        gameover_message.style.display = "block";
+        gameover_message.innerHTML = "Game restarting... ";
+
+        setTimeout(function() {
+        init();
+        }, 1000);        
     }
-    gameover_message.style.display = "block";
-    gameover_message.innerHTML = "Game restarting... ";
 
-    setTimeout(function() {
-       init();
-    }, 1000);
 }
 
 // start the game
