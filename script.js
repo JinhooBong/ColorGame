@@ -4,7 +4,7 @@ let levelTitle = document.getElementById("score");
 let gameover_message = document.getElementById("gameOverMessage");
 let playagain = document.getElementById("playagain");
 
-let offset = 75;
+let offset = 45;
 let score = 0;
 let level = 1;
 let offSquareIndex = 0;
@@ -85,16 +85,16 @@ const checkAnswer = function() {
             levelTitle.innerHTML = score;
     
             if(level >= 10) {
-                offset = 50;
-            }
-            if(level >= 20) {
                 offset = 35;
             }
-            if(level >= 30) {
+            if(level >= 20) {
                 offset = 25;
             }
-            if(level >= 40) {
+            if(level >= 30) {
                 offset = 15;
+            }
+            if(level >= 40) {
+                offset = 10;
             }
     
             setupColors();
@@ -107,13 +107,13 @@ const checkAnswer = function() {
 
 // setupColors() : reusable function to set the color combinations and set up the grid
 const setupColors = function() {
-    console.log(offset);
+    // console.log(offset);
     // generating the two new RGB combinations
     let colors = commonColor();
-    console.log(colors);
+    // console.log(colors);
     // generating the index of the off square
     offSquareIndex = Math.floor((Math.random() * gridItemArr.length));
-    console.log(offSquareIndex);
+    // console.log(offSquareIndex);
     // setting up the physical grid and adding a click event listener to each square 
     for(let i = 0; i < gridItemArr.length; i++) {
         gridItemArr[i].style.display = "block";
